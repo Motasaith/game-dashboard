@@ -1,0 +1,16 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.game-card-gradient {
+  background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.game-card-gradient::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: radial-gradient(circle at center, transparent 0%, rgba(0,0,0,0.6) 100%);
+}
