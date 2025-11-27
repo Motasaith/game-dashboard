@@ -81,9 +81,50 @@ const Login = () => {
             Create Identity
           </Link>
         </div>
+
+        {/* Server Status Indicator */}
+        <div className="mt-8 flex justify-center">
+             <ServerStatus />
+        </div>
       </motion.div>
     </div>
   );
+};
+
+const ServerStatus = () => {
+    const [status, setStatus] = useState('checking'); // checking, online, offline
+
+    useState(() => {
+        const checkStatus = async () => {
+            try {
+                // Use the API_URL from api.js logic or hardcode for now based on env
+                // We'll try to fetch from the server
+                const res = await fetch('http://localhost:5000/health');
+                if (res.ok) setStatus('online');
+                else setStatus('offline');
+            } catch (e) {
+                setStatus('offline');
+            }
+        };
+        checkStatus();
+        const interval = setInterval(checkStatus, 30000); // Check every 30s
+        return () => clearInterval(interval);
+    }, []);
+
+    if (status === 'checking') return <span className="text-xs text-slate-600 animate-pulse">CONNECTING TO MAINFRAME...</span>;
+    
+    return (
+        <div className={`flex items-center gap-2 px-3 py-1 rounded-full border ${
+            status === 'online' 
+            ? 'bg-green-500/10 border-green-500/20 text-green-400' 
+            : 'bg-red-500/10 border-red-500/20 text-red-400'
+        }`}>
+            <div className={`w-2 h-2 rounded-full ${status === 'online' ? 'bg-green-500 animate-pulse' : 'bg-red-500'}`} />
+            <span className="text-xs font-bold tracking-wider">
+                {status === 'online' ? 'SYSTEM ONLINE' : 'SYSTEM OFFLINE'}
+            </span>
+        </div>
+    );
 };
 
 export default Login;

@@ -14,7 +14,7 @@ const server = http.createServer(app);
 // Middleware
 const allowedOrigins = [
   "http://localhost:5173",
-  "https://your-game-dashboard.vercel.app" // Placeholder for future Vercel URL
+  "https://game-dashboard-three-omega.vercel.app" // Placeholder for future Vercel URL
 ];
 
 app.use(cors({
@@ -31,6 +31,11 @@ app.use(cors({
 }));
 
 app.use(express.json());
+
+// Health Check
+app.get('/health', (req, res) => {
+  res.status(200).json({ status: 'ok' });
+});
 
 // Routes
 app.use('/api/auth', authRoutes);
