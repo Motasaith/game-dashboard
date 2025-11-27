@@ -98,7 +98,7 @@ const ServerStatus = () => {
     useState(() => {
         const checkStatus = async () => {
             try {
-                const res = await api.get('/health');
+                const res = await api.get('/api/health');
                 if (res.status === 200) setStatus('online');
                 else setStatus('offline');
             } catch (e) {
