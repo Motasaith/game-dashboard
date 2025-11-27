@@ -2,6 +2,7 @@ import { useState, useContext } from "react";
 import { AuthContext } from "../context/AuthContext"; // Ensure path is correct
 import { useNavigate, Link } from "react-router-dom";
 import { motion } from "framer-motion";
+import api from "../utils/api";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -97,10 +98,8 @@ const ServerStatus = () => {
     useState(() => {
         const checkStatus = async () => {
             try {
-                // Use the API_URL from api.js logic or hardcode for now based on env
-                // We'll try to fetch from the server
-                const res = await fetch('http://localhost:5000/health');
-                if (res.ok) setStatus('online');
+                const res = await api.get('/health');
+                if (res.status === 200) setStatus('online');
                 else setStatus('offline');
             } catch (e) {
                 setStatus('offline');
