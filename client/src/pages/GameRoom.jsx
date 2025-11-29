@@ -18,6 +18,7 @@ const GameRoom = () => {
     const [privateRoomCode, setPrivateRoomCode] = useState(null);
     const [notification, setNotification] = useState(null); // { message, type: 'info' | 'error' | 'success' }
     const [showLeaveConfirm, setShowLeaveConfirm] = useState(false);
+    const [copied, setCopied] = useState(false);
 
     useEffect(() => {
         if (!socket) return;
@@ -194,9 +195,6 @@ const GameRoom = () => {
                 {renderNotification()}
                 <div className="relative">
                     <div className="w-24 h-24 border-4 border-slate-800 border-t-cyan-500 rounded-full animate-spin" />
-                    <div className="absolute inset-0 flex items-center justify-center">
-                        <Loader className="w-8 h-8 text-cyan-500 animate-pulse" />
-                    </div>
                 </div>
                 <h2 className="mt-8 text-2xl font-bold text-white tracking-widest animate-pulse">
                     {status === 'searching' ? 'SEARCHING FOR OPPONENT...' : 'CREATING SECURE ROOM...'}
