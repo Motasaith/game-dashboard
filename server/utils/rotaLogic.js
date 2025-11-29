@@ -64,7 +64,13 @@ class RotaGame {
             if (this.checkWin(symbol)) {
                 this.winner = playerId;
             } else {
-                this.switchTurn();
+                // Check Trapped Condition
+                const opponentId = this.getOpponent(playerId);
+                if (!this.hasAvailableMoves(opponentId)) {
+                    this.winner = playerId; // Current player wins if opponent is trapped
+                } else {
+                    this.switchTurn();
+                }
             }
         }
 
@@ -79,13 +85,28 @@ class RotaGame {
         this.turn = this.getOpponent(this.turn);
     }
 
+    hasAvailableMoves(playerId) {
+        const symbol = this.players[playerId];
+        // Find pieces
+        const pieceIndices = this.board.map((val, idx) => val === symbol ? idx : -1).filter(i => i !== -1);
+        
+        for (const from of pieceIndices) {
+            const neighbors = this.adjacency[from];
+            for (const to of neighbors) {
+                if (this.board[to] === null) return true;
+            }
+        }
+        return false;
+    }
+
     checkWin(symbol) {
-        // Win conditions: 3 in a row through center or around circle (Corner-Edge-Corner only)
+        // Win conditions: 3 in a row through center or around circle
         const lines = [
             // Through center
             [0, 8, 4], [1, 8, 5], [2, 8, 6], [3, 8, 7],
-            // Around circle (Corner-Edge-Corner)
-            [0, 1, 2], [2, 3, 4], [4, 5, 6], [6, 7, 0]
+            // Around circle (All 8 segments)
+            [0, 1, 2], [1, 2, 3], [2, 3, 4], [3, 4, 5],
+            [4, 5, 6], [5, 6, 7], [6, 7, 0], [7, 0, 1]
         ];
 
         return lines.some(line => line.every(index => this.board[index] === symbol));

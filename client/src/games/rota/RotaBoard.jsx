@@ -18,7 +18,7 @@ const WIN_LINES = [
     [4, 5, 6], [5, 6, 7], [6, 7, 0], [7, 0, 1]
 ];
 
-const RotaBoard = ({ mode = 'online', gameState: propGameState, playerId, onMove, onGameOver }) => {
+const RotaBoard = ({ mode = 'online', gameState: propGameState, playerId, onMove, onGameOver, onStateChange }) => {
     // --- Local State for CPU Mode ---
     const [localState, setLocalState] = useState({
         board: Array(9).fill(null),
@@ -29,7 +29,7 @@ const RotaBoard = ({ mode = 'online', gameState: propGameState, playerId, onMove
         winReason: null 
     });
 
-    const [showToss, setShowToss] = useState(true);
+    const [showToss, setShowToss] = useState(mode !== 'online');
     const [tossResult, setTossResult] = useState(null); 
     const [selectedNode, setSelectedNode] = useState(null);
 
@@ -46,6 +46,13 @@ const RotaBoard = ({ mode = 'online', gameState: propGameState, playerId, onMove
     useEffect(() => {
         setSelectedNode(null);
     }, [turn]);
+
+    // Sync Local State to Parent (for UI indicators)
+    useEffect(() => {
+        if (!isOnline && onStateChange) {
+            onStateChange(localState);
+        }
+    }, [localState, isOnline, onStateChange]);
 
     // --- Toss Logic (CPU Mode) ---
     useEffect(() => {

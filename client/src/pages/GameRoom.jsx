@@ -3,7 +3,7 @@ import { SocketContext } from '../context/SocketContext';
 import { AuthContext } from '../context/AuthContext';
 import RotaBoard from '../games/rota/RotaBoard';
 import RotaLobby from '../games/rota/RotaLobby';
-import { Loader, Copy, Check } from 'lucide-react';
+import { Loader, Copy, Check, LogOut } from 'lucide-react';
 
 const GameRoom = () => {
     const { socket } = useContext(SocketContext);
@@ -16,7 +16,8 @@ const GameRoom = () => {
     const [players, setPlayers] = useState({});
     const [winner, setWinner] = useState(null);
     const [privateRoomCode, setPrivateRoomCode] = useState(null);
-    const [copied, setCopied] = useState(false);
+    const [notification, setNotification] = useState(null); // { message, type: 'info' | 'error' | 'success' }
+    const [showLeaveConfirm, setShowLeaveConfirm] = useState(false);
 
     useEffect(() => {
         if (!socket) return;
@@ -39,7 +40,7 @@ const GameRoom = () => {
         });
 
         socket.on('opponent_disconnected', () => {
-            alert('Opponent disconnected! You win by default.');
+            setNotification({ message: 'Opponent disconnected! You win by default.', type: 'success' });
             setStatus('idle');
             setRoomId(null);
             setGameState(null);
@@ -48,6 +49,7 @@ const GameRoom = () => {
 
         socket.on('move_error', (err) => {
             console.error("Move Error:", err);
+            setNotification({ message: err, type: 'error' });
         });
 
         socket.on('room_created', ({ roomId }) => {
@@ -56,7 +58,7 @@ const GameRoom = () => {
         });
 
         socket.on('join_error', (msg) => {
-            alert(msg);
+            setNotification({ message: msg, type: 'error' });
             setStatus('idle');
         });
 
@@ -99,6 +101,26 @@ const GameRoom = () => {
         }
     };
 
+    const handleLeaveMatchClick = () => {
+        if (status === 'game_over') {
+            confirmLeaveMatch(); // No confirmation needed if game is already over
+        } else {
+            setShowLeaveConfirm(true);
+        }
+    };
+
+    const confirmLeaveMatch = () => {
+        if (gameMode === 'online' && socket && roomId) {
+            socket.emit('leave_match', { roomId });
+        }
+        setStatus('idle');
+        setGameMode(null);
+        setRoomId(null);
+        setGameState(null);
+        setWinner(null);
+        setShowLeaveConfirm(false);
+    };
+
     const handleCopyCode = () => {
         navigator.clipboard.writeText(privateRoomCode);
         setCopied(true);
@@ -107,15 +129,69 @@ const GameRoom = () => {
 
     // --- Render Logic ---
 
+    // Notification Popup
+    const renderNotification = () => {
+        if (!notification) return null;
+        return (
+            <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+                <div className="bg-slate-900 border border-slate-700 p-6 rounded-2xl max-w-sm w-full shadow-2xl transform scale-100 animate-in fade-in zoom-in duration-200">
+                    <h3 className={`text-xl font-bold mb-2 ${notification.type === 'error' ? 'text-red-400' : 'text-green-400'}`}>
+                        {notification.type === 'error' ? 'System Alert' : 'Notification'}
+                    </h3>
+                    <p className="text-slate-300 mb-6">{notification.message}</p>
+                    <button 
+                        onClick={() => setNotification(null)}
+                        className="w-full py-3 bg-slate-800 hover:bg-slate-700 text-white font-bold rounded-xl transition-colors"
+                    >
+                        Acknowledge
+                    </button>
+                </div>
+            </div>
+        );
+    };
+
+    // Leave Confirmation Modal
+    const renderLeaveConfirmation = () => {
+        if (!showLeaveConfirm) return null;
+        return (
+            <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+                <div className="bg-slate-900 border border-slate-700 p-6 rounded-2xl max-w-sm w-full shadow-2xl transform scale-100 animate-in fade-in zoom-in duration-200">
+                    <h3 className="text-xl font-bold text-white mb-2">Leave Match?</h3>
+                    <p className="text-slate-300 mb-6">Are you sure you want to leave? This will forfeit the match.</p>
+                    <div className="flex gap-3">
+                        <button 
+                            onClick={() => setShowLeaveConfirm(false)}
+                            className="flex-1 py-3 bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold rounded-xl transition-colors"
+                        >
+                            Cancel
+                        </button>
+                        <button 
+                            onClick={confirmLeaveMatch}
+                            className="flex-1 py-3 bg-red-500 hover:bg-red-600 text-white font-bold rounded-xl transition-colors"
+                        >
+                            Yes, Leave
+                        </button>
+                    </div>
+                </div>
+            </div>
+        );
+    };
+
     // 1. Lobby
     if (!gameMode) {
-        return <RotaLobby onSelectMode={handleSelectMode} onJoinPrivate={handleJoinPrivate} />;
+        return (
+            <>
+                {renderNotification()}
+                <RotaLobby onSelectMode={handleSelectMode} onJoinPrivate={handleJoinPrivate} />
+            </>
+        );
     }
 
     // 2. Searching / Waiting States
     if (status === 'searching' || status === 'creating') {
         return (
-            <div className="h-full flex flex-col items-center justify-center">
+            <div className="h-full flex flex-col items-center justify-center relative">
+                {renderNotification()}
                 <div className="relative">
                     <div className="w-24 h-24 border-4 border-slate-800 border-t-cyan-500 rounded-full animate-spin" />
                     <div className="absolute inset-0 flex items-center justify-center">
@@ -140,7 +216,8 @@ const GameRoom = () => {
 
     if (status === 'waiting_private') {
         return (
-            <div className="h-full flex flex-col items-center justify-center">
+            <div className="h-full flex flex-col items-center justify-center relative">
+                {renderNotification()}
                 <h2 className="text-3xl font-bold text-white mb-8">Waiting for Opponent</h2>
                 
                 <div className="bg-slate-900 p-8 rounded-2xl border border-slate-800 text-center">
@@ -172,13 +249,19 @@ const GameRoom = () => {
     }
 
     // 3. Game Board (CPU or Online)
+    const isMyTurn = gameMode === 'online' 
+        ? gameState?.turn === socket.id 
+        : gameState?.turn === 'player';
+
     return (
-        <div className="min-h-full flex flex-col p-2 md:p-4 overflow-y-auto">
+        <div className="min-h-full flex flex-col p-2 md:p-4 overflow-y-auto relative">
+            {renderNotification()}
+            {renderLeaveConfirmation()}
             {/* Header */}
             <div className="flex justify-between items-center mb-4 md:mb-8 bg-slate-900/50 p-2 md:p-4 rounded-xl border border-slate-800 text-sm md:text-base">
-                <div className="flex items-center gap-2 md:gap-3">
-                    <div className="w-8 h-8 md:w-10 md:h-10 bg-cyan-900/50 rounded-lg flex items-center justify-center border border-cyan-500/30">
-                        <span className="text-cyan-400 font-bold text-xs md:text-base">YOU</span>
+                <div className={`flex items-center gap-2 md:gap-3 transition-opacity ${isMyTurn ? 'opacity-100' : 'opacity-50'}`}>
+                    <div className={`w-8 h-8 md:w-10 md:h-10 rounded-lg flex items-center justify-center border ${isMyTurn ? 'bg-cyan-500 text-white border-cyan-400 shadow-[0_0_15px_#06b6d4]' : 'bg-cyan-900/50 text-cyan-400 border-cyan-500/30'}`}>
+                        <span className="font-bold text-xs md:text-base">YOU</span>
                     </div>
                     <div>
                         <p className="font-bold text-white max-w-[80px] md:max-w-none truncate">{user.username}</p>
@@ -188,9 +271,16 @@ const GameRoom = () => {
                     </div>
                 </div>
 
-                <div className="text-xl md:text-2xl font-black text-slate-700">VS</div>
+                <div className="flex flex-col items-center">
+                    <div className="text-xl md:text-2xl font-black text-slate-700">VS</div>
+                    {status === 'playing' && !winner && (
+                        <div className={`text-[10px] md:text-xs font-bold px-2 py-1 rounded-full mt-1 ${isMyTurn ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'}`}>
+                            {isMyTurn ? "YOUR TURN" : "OPPONENT'S TURN"}
+                        </div>
+                    )}
+                </div>
 
-                <div className="flex items-center gap-2 md:gap-3 text-right">
+                <div className={`flex items-center gap-2 md:gap-3 text-right transition-opacity ${!isMyTurn ? 'opacity-100' : 'opacity-50'}`}>
                     <div>
                         <p className="font-bold text-white max-w-[80px] md:max-w-none truncate">
                             {gameMode === 'online' 
@@ -202,19 +292,25 @@ const GameRoom = () => {
                             {gameMode === 'online' ? 'Enemy Agent' : 'Level 1'}
                         </p>
                     </div>
-                    <div className="w-8 h-8 md:w-10 md:h-10 bg-purple-900/50 rounded-lg flex items-center justify-center border border-purple-500/30">
-                        <span className="text-purple-400 font-bold text-xs md:text-base">OPP</span>
+                    <div className={`w-8 h-8 md:w-10 md:h-10 rounded-lg flex items-center justify-center border ${!isMyTurn ? 'bg-purple-500 text-white border-purple-400 shadow-[0_0_15px_#a855f7]' : 'bg-purple-900/50 text-purple-400 border-purple-500/30'}`}>
+                        <span className="font-bold text-xs md:text-base">OPP</span>
                     </div>
                 </div>
             </div>
 
             {/* Game Board */}
-            <div className="flex-1 flex items-center justify-center w-full">
+            <div className="flex-1 flex items-center justify-center w-full relative">
                 <RotaBoard 
+                    key={gameMode} // Force reset when mode changes
                     mode={gameMode}
                     gameState={gameState} 
                     playerId={gameMode === 'online' ? socket.id : user._id} 
                     onMove={handleMove}
+                    onStateChange={(localState) => {
+                        if (gameMode === 'cpu') {
+                            setGameState(localState);
+                        }
+                    }}
                     onGameOver={(w) => {
                         setWinner(w);
                         setStatus('game_over');
@@ -222,23 +318,18 @@ const GameRoom = () => {
                 />
             </div>
 
-            {/* Game Over Actions */}
-            {(status === 'game_over' || winner) && (
-                <div className="text-center mt-8">
+            {/* Footer Actions */}
+            <div className="mt-4 flex justify-center">
+                {(status === 'playing' || status === 'game_over') && (
                     <button 
-                        onClick={() => {
-                            setStatus('idle');
-                            setGameMode(null);
-                            setWinner(null);
-                            setGameState(null);
-                            setRoomId(null);
-                        }}
-                        className="px-6 py-3 bg-slate-800 hover:bg-slate-700 text-white font-bold rounded-lg transition-colors"
+                        onClick={handleLeaveMatchClick}
+                        className="flex items-center gap-2 px-4 py-2 bg-red-500/10 hover:bg-red-500/20 text-red-500 rounded-lg transition-colors text-sm font-bold"
                     >
-                        Return to Lobby
+                        <LogOut className="w-4 h-4" />
+                        {status === 'game_over' ? 'Return to Lobby' : 'Leave Match'}
                     </button>
-                </div>
-            )}
+                )}
+            </div>
         </div>
     );
 };

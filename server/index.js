@@ -161,6 +161,16 @@ io.on("connection", (socket) => {
       console.log(`Private game started: ${roomId}`);
   });
 
+  socket.on("leave_match", ({ roomId }) => {
+      const game = games[roomId];
+      if (game) {
+          socket.to(roomId).emit("opponent_disconnected"); // Reuse existing event or create new 'opponent_left'
+          socket.leave(roomId);
+          delete games[roomId];
+          console.log(`User ${socket.id} left match ${roomId}`);
+      }
+  });
+
   socket.on("rota_move", ({ roomId, move }) => {
       const game = games[roomId];
       if (!game) return;
