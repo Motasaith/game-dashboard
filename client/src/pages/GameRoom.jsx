@@ -191,20 +191,20 @@ const GameRoom = () => {
     // 2. Searching / Waiting States
     if (status === 'searching' || status === 'creating') {
         return (
-            <div className="h-full flex flex-col items-center justify-center relative">
+            <div className="h-full flex flex-col items-center justify-center relative text-center px-4">
                 {renderNotification()}
                 <div className="relative">
-                    <div className="w-24 h-24 border-4 border-slate-800 border-t-cyan-500 rounded-full animate-spin" />
+                    <div className="w-16 h-16 md:w-24 md:h-24 border-4 border-slate-800 border-t-cyan-500 rounded-full animate-spin" />
                 </div>
-                <h2 className="mt-8 text-2xl font-bold text-white tracking-widest animate-pulse">
+                <h2 className="mt-6 md:mt-8 text-xl md:text-2xl font-bold text-white tracking-widest animate-pulse">
                     {status === 'searching' ? 'SEARCHING FOR OPPONENT...' : 'CREATING SECURE ROOM...'}
                 </h2>
-                <p className="text-slate-500 mt-2">
+                <p className="text-sm md:text-base text-slate-500 mt-2">
                     {status === 'searching' ? 'Scanning network for agents' : 'Encrypting connection'}
                 </p>
                 <button 
                     onClick={() => { setStatus('idle'); setGameMode(null); }}
-                    className="mt-8 text-slate-500 hover:text-white underline"
+                    className="mt-6 md:mt-8 text-slate-500 hover:text-white underline text-sm md:text-base"
                 >
                     Cancel
                 </button>
@@ -214,31 +214,31 @@ const GameRoom = () => {
 
     if (status === 'waiting_private') {
         return (
-            <div className="h-full flex flex-col items-center justify-center relative">
+            <div className="h-full flex flex-col items-center justify-center relative px-4">
                 {renderNotification()}
-                <h2 className="text-3xl font-bold text-white mb-8">Waiting for Opponent</h2>
+                <h2 className="text-2xl md:text-3xl font-bold text-white mb-6 md:mb-8 text-center">Waiting for Opponent</h2>
                 
-                <div className="bg-slate-900 p-8 rounded-2xl border border-slate-800 text-center">
-                    <p className="text-slate-400 mb-4 uppercase tracking-widest text-sm">Room Code</p>
-                    <div className="flex items-center gap-4 mb-6">
-                        <span className="text-5xl font-mono font-bold text-cyan-400 tracking-widest">
+                <div className="bg-slate-900 p-4 md:p-8 rounded-2xl border border-slate-800 text-center w-full max-w-md">
+                    <p className="text-slate-400 mb-2 md:mb-4 uppercase tracking-widest text-xs md:text-sm">Room Code</p>
+                    <div className="flex items-center justify-center gap-2 md:gap-4 mb-4 md:mb-6">
+                        <span className="text-3xl md:text-5xl font-mono font-bold text-cyan-400 tracking-widest truncate">
                             {privateRoomCode}
                         </span>
                         <button 
                             onClick={handleCopyCode}
-                            className="p-3 bg-slate-800 hover:bg-slate-700 rounded-xl transition-colors"
+                            className="p-2 md:p-3 bg-slate-800 hover:bg-slate-700 rounded-xl transition-colors flex-shrink-0"
                         >
-                            {copied ? <Check className="w-6 h-6 text-green-500" /> : <Copy className="w-6 h-6 text-slate-400" />}
+                            {copied ? <Check className="w-5 h-5 md:w-6 md:h-6 text-green-500" /> : <Copy className="w-5 h-5 md:w-6 md:h-6 text-slate-400" />}
                         </button>
                     </div>
-                    <p className="text-slate-500 text-sm">
+                    <p className="text-slate-500 text-xs md:text-sm">
                         Share this code with your friend to start the match.
                     </p>
                 </div>
 
                 <button 
                     onClick={() => { setStatus('idle'); setGameMode(null); }}
-                    className="mt-12 text-slate-500 hover:text-white underline"
+                    className="mt-8 md:mt-12 text-slate-500 hover:text-white underline text-sm md:text-base"
                 >
                     Cancel
                 </button>
@@ -257,41 +257,41 @@ const GameRoom = () => {
             {renderLeaveConfirmation()}
             {/* Header */}
             <div className="flex justify-between items-center mb-4 md:mb-8 bg-slate-900/50 p-2 md:p-4 rounded-xl border border-slate-800 text-sm md:text-base">
-                <div className={`flex items-center gap-2 md:gap-3 transition-opacity ${isMyTurn ? 'opacity-100' : 'opacity-50'}`}>
-                    <div className={`w-8 h-8 md:w-10 md:h-10 rounded-lg flex items-center justify-center border ${isMyTurn ? 'bg-cyan-500 text-white border-cyan-400 shadow-[0_0_15px_#06b6d4]' : 'bg-cyan-900/50 text-cyan-400 border-cyan-500/30'}`}>
-                        <span className="font-bold text-xs md:text-base">YOU</span>
+                <div className={`flex items-center gap-2 md:gap-3 transition-opacity ${isMyTurn ? 'opacity-100' : 'opacity-50'} flex-1 min-w-0`}>
+                    <div className={`w-8 h-8 md:w-10 md:h-10 rounded-lg flex items-center justify-center border flex-shrink-0 ${isMyTurn ? 'bg-cyan-500 text-white border-cyan-400 shadow-[0_0_15px_#06b6d4]' : 'bg-cyan-900/50 text-cyan-400 border-cyan-500/30'}`}>
+                        <span className="font-bold text-[10px] md:text-base">YOU</span>
                     </div>
-                    <div>
-                        <p className="font-bold text-white max-w-[80px] md:max-w-none truncate">{user.username}</p>
-                        <p className="text-[10px] md:text-xs text-slate-400">
-                            Playing as {gameMode === 'online' ? gameState?.players[socket.id] : 'X'}
+                    <div className="min-w-0">
+                        <p className="font-bold text-white truncate text-xs md:text-base">{user.username}</p>
+                        <p className="text-[10px] md:text-xs text-slate-400 truncate">
+                            {gameMode === 'online' ? gameState?.players[socket.id] : 'X'}
                         </p>
                     </div>
                 </div>
 
-                <div className="flex flex-col items-center">
-                    <div className="text-xl md:text-2xl font-black text-slate-700">VS</div>
+                <div className="flex flex-col items-center px-2 md:px-4 flex-shrink-0">
+                    <div className="text-lg md:text-2xl font-black text-slate-700">VS</div>
                     {status === 'playing' && !winner && (
-                        <div className={`text-[10px] md:text-xs font-bold px-2 py-1 rounded-full mt-1 ${isMyTurn ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'}`}>
-                            {isMyTurn ? "YOUR TURN" : "OPPONENT'S TURN"}
+                        <div className={`text-[10px] md:text-xs font-bold px-2 py-0.5 md:py-1 rounded-full mt-1 whitespace-nowrap ${isMyTurn ? 'bg-green-500/20 text-green-400' : 'bg-red-500/20 text-red-400'}`}>
+                            {isMyTurn ? "YOUR TURN" : "OPPONENT"}
                         </div>
                     )}
                 </div>
 
-                <div className={`flex items-center gap-2 md:gap-3 text-right transition-opacity ${!isMyTurn ? 'opacity-100' : 'opacity-50'}`}>
-                    <div>
-                        <p className="font-bold text-white max-w-[80px] md:max-w-none truncate">
+                <div className={`flex items-center justify-end gap-2 md:gap-3 text-right transition-opacity ${!isMyTurn ? 'opacity-100' : 'opacity-50'} flex-1 min-w-0`}>
+                    <div className="min-w-0">
+                        <p className="font-bold text-white truncate text-xs md:text-base">
                             {gameMode === 'online' 
                                 ? (Object.entries(players).find(([id]) => id !== socket.id)?.[1] || 'Opponent')
                                 : 'System AI'
                             }
                         </p>
-                        <p className="text-[10px] md:text-xs text-slate-400">
-                            {gameMode === 'online' ? 'Enemy Agent' : 'Level 1'}
+                        <p className="text-[10px] md:text-xs text-slate-400 truncate">
+                            {gameMode === 'online' ? 'Enemy' : 'Lvl 1'}
                         </p>
                     </div>
-                    <div className={`w-8 h-8 md:w-10 md:h-10 rounded-lg flex items-center justify-center border ${!isMyTurn ? 'bg-purple-500 text-white border-purple-400 shadow-[0_0_15px_#a855f7]' : 'bg-purple-900/50 text-purple-400 border-purple-500/30'}`}>
-                        <span className="font-bold text-xs md:text-base">OPP</span>
+                    <div className={`w-8 h-8 md:w-10 md:h-10 rounded-lg flex items-center justify-center border flex-shrink-0 ${!isMyTurn ? 'bg-purple-500 text-white border-purple-400 shadow-[0_0_15px_#a855f7]' : 'bg-purple-900/50 text-purple-400 border-purple-500/30'}`}>
+                        <span className="font-bold text-[10px] md:text-base">OPP</span>
                     </div>
                 </div>
             </div>
