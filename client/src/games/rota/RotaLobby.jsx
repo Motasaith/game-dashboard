@@ -6,12 +6,12 @@ const RotaLobby = ({ onSelectMode, onJoinPrivate }) => {
     const [roomCode, setRoomCode] = useState('');
 
     return (
-        <div className="h-full flex flex-col items-center justify-center p-8">
+        <div className="min-h-full flex flex-col items-center justify-center p-4 md:p-8">
             <div className="text-center max-w-4xl w-full">
-                <h1 className="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-600 mb-2 tracking-tighter">
+                <h1 className="text-3xl md:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-600 mb-2 tracking-tighter">
                     ROTA
                 </h1>
-                <p className="text-slate-400 mb-12 text-lg">
+                <p className="text-slate-400 mb-8 md:mb-12 text-base md:text-lg">
                     Select your battlefield
                 </p>
 
@@ -83,6 +83,43 @@ const RotaLobby = ({ onSelectMode, onJoinPrivate }) => {
                         </div>
                     </motion.div>
                 </div>
+
+                {/* How to Play Section */}
+                <motion.div 
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.2 }}
+                    className="mt-8 md:mt-12 bg-slate-900/30 border border-slate-800 rounded-2xl p-6 md:p-8 text-left"
+                >
+                    <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-2">
+                        <span className="text-cyan-400">?</span> How to Play
+                    </h2>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-slate-300">
+                        <div>
+                            <h3 className="text-lg font-bold text-cyan-400 mb-2">1. The Goal</h3>
+                            <p className="text-sm leading-relaxed">
+                                Get 3 of your pieces in a row. You can win by forming a line through the center (Diameter) or along the edge (Arc).
+                            </p>
+                        </div>
+                        
+                        <div>
+                            <h3 className="text-lg font-bold text-purple-400 mb-2">2. The Phases</h3>
+                            <ul className="text-sm space-y-2">
+                                <li><strong className="text-white">Placing:</strong> Take turns placing 3 pieces each on any empty spot.</li>
+                                <li><strong className="text-white">Moving:</strong> Once all pieces are placed, take turns moving one piece to an adjacent empty spot.</li>
+                            </ul>
+                        </div>
+                        
+                        <div>
+                            <h3 className="text-lg font-bold text-red-400 mb-2">3. Win & Loss</h3>
+                            <ul className="text-sm space-y-2">
+                                <li><strong className="text-green-400">Victory:</strong> Form a line of 3.</li>
+                                <li><strong className="text-red-500">Defeat:</strong> Get trapped with no valid moves available.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </motion.div>
             </div>
         </div>
     );

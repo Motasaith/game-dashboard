@@ -43,19 +43,19 @@ const Friends = () => {
     }, [searchQuery]);
 
     return (
-        <div className="p-8 h-full overflow-y-auto">
-            <h1 className="text-3xl font-black text-white mb-8 tracking-tight flex items-center gap-3">
-                <Users className="w-8 h-8 text-cyan-500" />
+        <div className="p-4 md:p-8 h-full overflow-y-auto">
+            <h1 className="text-2xl md:text-3xl font-black text-white mb-6 md:mb-8 tracking-tight flex items-center gap-3">
+                <Users className="w-6 h-6 md:w-8 md:h-8 text-cyan-500" />
                 SOCIAL HUB
             </h1>
 
             {/* Tabs */}
-            <div className="flex gap-4 mb-8 border-b border-slate-800 pb-1">
+            <div className="flex gap-4 mb-6 md:mb-8 border-b border-slate-800 pb-1 overflow-x-auto scrollbar-hide">
                 {['all', 'online', 'pending', 'add'].map((tab) => (
                     <button
                         key={tab}
                         onClick={() => setActiveTab(tab)}
-                        className={`px-4 py-2 font-bold text-sm uppercase tracking-wider transition-colors relative ${
+                        className={`px-4 py-2 font-bold text-sm uppercase tracking-wider transition-colors relative whitespace-nowrap ${
                             activeTab === tab ? 'text-cyan-400' : 'text-slate-500 hover:text-slate-300'
                         }`}
                     >

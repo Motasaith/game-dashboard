@@ -27,9 +27,9 @@ const Settings = () => {
     };
 
     return (
-        <div className="p-8 h-full overflow-y-auto max-w-4xl mx-auto">
-            <h1 className="text-3xl font-black text-white mb-8 tracking-tight flex items-center gap-3">
-                <SettingsIcon className="w-8 h-8 text-cyan-500" />
+        <div className="p-4 md:p-8 h-full overflow-y-auto max-w-4xl mx-auto">
+            <h1 className="text-2xl md:text-3xl font-black text-white mb-6 md:mb-8 tracking-tight flex items-center gap-3">
+                <SettingsIcon className="w-6 h-6 md:w-8 md:h-8 text-cyan-500" />
                 SYSTEM CONFIGURATION
             </h1>
 

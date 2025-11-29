@@ -173,43 +173,43 @@ const GameRoom = () => {
 
     // 3. Game Board (CPU or Online)
     return (
-        <div className="h-full flex flex-col p-4">
+        <div className="min-h-full flex flex-col p-2 md:p-4 overflow-y-auto">
             {/* Header */}
-            <div className="flex justify-between items-center mb-8 bg-slate-900/50 p-4 rounded-xl border border-slate-800">
-                <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-cyan-900/50 rounded-lg flex items-center justify-center border border-cyan-500/30">
-                        <span className="text-cyan-400 font-bold">YOU</span>
+            <div className="flex justify-between items-center mb-4 md:mb-8 bg-slate-900/50 p-2 md:p-4 rounded-xl border border-slate-800 text-sm md:text-base">
+                <div className="flex items-center gap-2 md:gap-3">
+                    <div className="w-8 h-8 md:w-10 md:h-10 bg-cyan-900/50 rounded-lg flex items-center justify-center border border-cyan-500/30">
+                        <span className="text-cyan-400 font-bold text-xs md:text-base">YOU</span>
                     </div>
                     <div>
-                        <p className="font-bold text-white">{user.username}</p>
-                        <p className="text-xs text-slate-400">
+                        <p className="font-bold text-white max-w-[80px] md:max-w-none truncate">{user.username}</p>
+                        <p className="text-[10px] md:text-xs text-slate-400">
                             Playing as {gameMode === 'online' ? gameState?.players[socket.id] : 'X'}
                         </p>
                     </div>
                 </div>
 
-                <div className="text-2xl font-black text-slate-700">VS</div>
+                <div className="text-xl md:text-2xl font-black text-slate-700">VS</div>
 
-                <div className="flex items-center gap-3 text-right">
+                <div className="flex items-center gap-2 md:gap-3 text-right">
                     <div>
-                        <p className="font-bold text-white">
+                        <p className="font-bold text-white max-w-[80px] md:max-w-none truncate">
                             {gameMode === 'online' 
                                 ? (Object.entries(players).find(([id]) => id !== socket.id)?.[1] || 'Opponent')
                                 : 'System AI'
                             }
                         </p>
-                        <p className="text-xs text-slate-400">
+                        <p className="text-[10px] md:text-xs text-slate-400">
                             {gameMode === 'online' ? 'Enemy Agent' : 'Level 1'}
                         </p>
                     </div>
-                    <div className="w-10 h-10 bg-purple-900/50 rounded-lg flex items-center justify-center border border-purple-500/30">
-                        <span className="text-purple-400 font-bold">OPP</span>
+                    <div className="w-8 h-8 md:w-10 md:h-10 bg-purple-900/50 rounded-lg flex items-center justify-center border border-purple-500/30">
+                        <span className="text-purple-400 font-bold text-xs md:text-base">OPP</span>
                     </div>
                 </div>
             </div>
 
             {/* Game Board */}
-            <div className="flex-1 flex items-center justify-center">
+            <div className="flex-1 flex items-center justify-center w-full">
                 <RotaBoard 
                     mode={gameMode}
                     gameState={gameState} 

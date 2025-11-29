@@ -28,7 +28,7 @@ const Layout = ({ children }) => {
             <motion.div 
                 initial={{ x: -100, opacity: 0 }}
                 animate={{ x: 0, opacity: 1 }}
-                className="w-20 lg:w-64 bg-slate-900 border-r border-slate-800 flex flex-col justify-between z-20"
+                className="w-16 lg:w-64 bg-slate-900 border-r border-slate-800 flex flex-col justify-between z-20"
             >
                 <div>
                     {/* Logo */}
