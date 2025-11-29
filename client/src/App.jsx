@@ -11,9 +11,19 @@ import Layout from './components/Layout';
 import { useContext } from 'react';
 
 const PrivateRoute = ({ children }) => {
-    const { token, loading } = useContext(AuthContext);
-    if (loading) return <div>Loading...</div>;
-    return token ? children : <Navigate to="/login" />;
+    const { user, loading } = useContext(AuthContext);
+    if (loading) return (
+        <div className="min-h-screen flex items-center justify-center bg-slate-950">
+            <div className="w-16 h-16 border-4 border-cyan-500 border-t-transparent rounded-full animate-spin"></div>
+        </div>
+    );
+    return user ? children : <Navigate to="/login" />;
+};
+
+const PublicRoute = ({ children }) => {
+    const { user, loading } = useContext(AuthContext);
+    if (loading) return null;
+    return user ? <Navigate to="/" /> : children;
 };
 
 function App() {
@@ -23,8 +33,8 @@ function App() {
         <Router>
           <div className="min-h-screen bg-gray-900 text-white">
             <Routes>
-              <Route path="/login" element={<Login />} />
-              <Route path="/register" element={<Register />} />
+              <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
+              <Route path="/register" element={<PublicRoute><Register /></PublicRoute>} />
               <Route 
                 path="/" 
                 element={

@@ -23,6 +23,20 @@ export const AuthProvider = ({ children }) => {
                     localStorage.removeItem('user');
                     localStorage.removeItem('token');
                 }
+            } else {
+                // Guest Logic
+                let guestUser = localStorage.getItem('guest_user');
+                if (!guestUser) {
+                    const randomId = Math.floor(Math.random() * 10000);
+                    guestUser = JSON.stringify({
+                        _id: `guest_${Date.now()}`,
+                        username: `Guest_${randomId}`,
+                        email: `guest_${randomId}@example.com`,
+                        isGuest: true
+                    });
+                    localStorage.setItem('guest_user', guestUser);
+                }
+                setUser(JSON.parse(guestUser));
             }
             setLoading(false);
         };
