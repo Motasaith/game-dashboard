@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Coins } from 'lucide-react';
 import { getBestPlacement, getBestMove } from '@/lib/aiEngine';
+import GameOverModal from '@/components/games/GameOverModal';
 
 // --- CONSTANTS ---
 const ADJACENCY: { [key: number]: number[] } = {
@@ -283,8 +284,26 @@ const RotaBoard: React.FC<RotaBoardProps> = ({ mode = 'online', gameState: propG
     }
     nodes.push({ id: 8, x: center.x, y: center.y });
 
+    const resetGame = () => {
+        setLocalState({
+            board: Array(9).fill(null),
+            turn: null as string | null,
+            phase: 'placing',
+            piecesPlaced: { player: 0, cpu: 0 },
+            winner: null as string | null,
+            winReason: null as string | null
+        });
+        setShowToss(mode !== 'online');
+        setTossResult(null);
+        setSelectedNode(null);
+    };
+
+    const winnerForModal = winner
+        ? (winner === playerId || winner === 'player') ? 'player' : 'cpu'
+        : null;
+
     return (
-        <div className="relative w-full max-w-[400px] aspect-square mx-auto select-none">
+        <div className="relative w-full max-w-[300px] sm:max-w-[350px] md:max-w-[400px] aspect-square mx-auto select-none">
             {/* Toss Overlay */}
             <AnimatePresence>
                 {!isOnline && showToss && (
@@ -356,29 +375,19 @@ const RotaBoard: React.FC<RotaBoardProps> = ({ mode = 'online', gameState: propG
             {/* Status Overlay */}
             {!isMyTurn && !winner && !showToss && (
                 <div className="absolute inset-0 z-20 flex items-center justify-center pointer-events-none">
-                    <div className="bg-black/50 backdrop-blur-sm px-6 py-2 rounded-full border border-slate-700 text-slate-300 font-bold tracking-widest uppercase text-sm md:text-base">
+                    <div className="glass-strong px-4 sm:px-6 py-2 rounded-full text-slate-300 font-bold tracking-widest uppercase text-xs sm:text-sm md:text-base">
                         {isOnline ? "Opponent's Turn" : "CPU Thinking..."}
                     </div>
                 </div>
             )}
 
-            {winner && (
-                <div className="absolute inset-0 z-30 flex items-center justify-center bg-black/60 backdrop-blur-md rounded-xl">
-                    <div className="text-center p-4">
-                        <h2 className={`text-3xl md:text-4xl font-black mb-2 ${(winner === playerId || winner === 'player')
-                            ? 'text-green-400' : 'text-red-500'
-                            }`}>
-                            {(winner === playerId || winner === 'player') ? 'VICTORY' : 'DEFEAT'}
-                        </h2>
-                        <p className="text-slate-400 text-xs md:text-sm uppercase tracking-widest mb-1">
-                            {winReason === 'trapped'
-                                ? ((winner === playerId || winner === 'player') ? "OPPONENT TRAPPED" : "YOU WERE TRAPPED")
-                                : "GAME OVER"
-                            }
-                        </p>
-                    </div>
-                </div>
-            )}
+            {/* Game Over Modal */}
+            <GameOverModal
+                winner={winnerForModal}
+                accentColor="purple"
+                onPlayAgain={resetGame}
+                show={!!winner}
+            />
         </div>
     );
 };
