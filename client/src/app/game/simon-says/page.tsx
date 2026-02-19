@@ -51,7 +51,7 @@ export default function SimonSaysPage() {
                 gradient="from-green-400 to-emerald-500"
                 rules={RULES}
                 onSelectMode={(mode) => {
-                    if (mode === 'cpu') setIsPlaying(true);
+                    setIsPlaying(true);
                 }}
             />
         </div>

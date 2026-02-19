@@ -55,7 +55,7 @@ export default function ChessPage() {
                 gradient="from-green-500 to-emerald-600"
                 rules={RULES}
                 onSelectMode={(mode) => {
-                    if (mode === 'cpu') setIsPlaying(true);
+                    setIsPlaying(true);
                 }}
             />
         </div>

@@ -24,7 +24,7 @@ export default function MahjongPage() {
     );
     return (
         <div className="min-h-screen bg-slate-950 flex items-center justify-center p-4">
-            <GameLobby title="MAHJONG SOLITAIRE" subtitle="Match • Clear • Meditate" gradient="from-cyan-400 to-teal-500" rules={RULES} onSelectMode={(mode) => { if (mode === 'cpu') setIsPlaying(true); }} />
+            <GameLobby title="MAHJONG SOLITAIRE" subtitle="Match • Clear • Meditate" gradient="from-cyan-400 to-teal-500" rules={RULES} onSelectMode={(mode) => { setIsPlaying(true); }} />
         </div>
     );
 }

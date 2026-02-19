@@ -23,11 +23,36 @@ export const sendInvite = mutation({
     },
 });
 
-// ─── Accept a game invite ───
+// ─── Accept a game invite → creates a game session ───
 export const acceptInvite = mutation({
     args: { inviteId: v.id("gameInvites") },
     handler: async (ctx, args) => {
-        await ctx.db.patch(args.inviteId, { status: "accepted" });
+        const invite = await ctx.db.get(args.inviteId);
+        if (!invite) throw new Error("Invite not found");
+
+        // Extract game slug from path (e.g. "/game/chess" → "chess")
+        const gameSlug = invite.gamePath.split("/").pop() || "unknown";
+
+        // Create a game session for both players
+        const roomCode = Math.random().toString(36).substring(2, 8).toUpperCase();
+        const sessionId = await ctx.db.insert("gameSessions", {
+            gameSlug,
+            roomCode,
+            player1Id: invite.fromUser,
+            player1Name: invite.fromUserName,
+            player2Id: invite.toUser,
+            player2Name: "Player 2",
+            status: "active",
+            createdAt: Date.now(),
+        });
+
+        // Update invite with session info
+        await ctx.db.patch(args.inviteId, {
+            status: "accepted",
+            sessionId: sessionId,
+        });
+
+        return { sessionId, gamePath: invite.gamePath };
     },
 });
 
@@ -47,12 +72,11 @@ export const getPendingInvites = query({
             .query("gameInvites")
             .withIndex("by_toUser", (q) => q.eq("toUser", args.clerkId))
             .collect();
-
         return invites.filter((i) => i.status === "pending");
     },
 });
 
-// ─── Get invites I sent ───
+// ─── Get invites I sent (for polling accepted status) ───
 export const getSentInvites = query({
     args: { clerkId: v.string() },
     handler: async (ctx, args) => {
@@ -60,7 +84,12 @@ export const getSentInvites = query({
             .query("gameInvites")
             .withIndex("by_fromUser", (q) => q.eq("fromUser", args.clerkId))
             .collect();
-
-        return invites.filter((i) => i.status === "pending");
+        // Return recently accepted invites (within last 30s) so sender can redirect
+        const now = Date.now();
+        return invites.filter(
+            (i) =>
+                i.status === "pending" ||
+                (i.status === "accepted" && i.sessionId && now - i.createdAt < 120000)
+        );
     },
 });

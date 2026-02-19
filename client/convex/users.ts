@@ -110,3 +110,21 @@ export const searchUsers = query({
             }));
     },
 });
+
+// Get all registered users (exclude current user)
+export const getAllUsers = query({
+    args: { excludeClerkId: v.string() },
+    handler: async (ctx, args) => {
+        const users = await ctx.db.query("users").collect();
+        const now = Date.now();
+        return users
+            .filter((u) => u.clerkId !== args.excludeClerkId)
+            .map((u) => ({
+                clerkId: u.clerkId,
+                name: u.name,
+                avatar: u.avatar,
+                isOnline: u.isOnline && now - u.lastSeen < 60000,
+            }))
+            .sort((a, b) => (a.isOnline === b.isOnline ? 0 : a.isOnline ? -1 : 1));
+    },
+});

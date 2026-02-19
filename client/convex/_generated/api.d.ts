@@ -10,6 +10,8 @@
 
 import type * as friends from "../friends.js";
 import type * as gameInvites from "../gameInvites.js";
+import type * as gameSessions from "../gameSessions.js";
+import type * as matchmaking from "../matchmaking.js";
 import type * as users from "../users.js";
 
 import type {
@@ -21,6 +23,8 @@ import type {
 declare const fullApi: ApiFromModules<{
   friends: typeof friends;
   gameInvites: typeof gameInvites;
+  gameSessions: typeof gameSessions;
+  matchmaking: typeof matchmaking;
   users: typeof users;
 }>;
 

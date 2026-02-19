@@ -24,7 +24,7 @@ export default function ShogiPage() {
     );
     return (
         <div className="min-h-screen bg-slate-950 flex items-center justify-center p-4">
-            <GameLobby title="SHOGI" subtitle="Japanese Chess • Drop & Promote" gradient="from-amber-400 to-red-500" rules={RULES} onSelectMode={(mode) => { if (mode === 'cpu') setIsPlaying(true); }} />
+            <GameLobby title="SHOGI" subtitle="Japanese Chess • Drop & Promote" gradient="from-amber-400 to-red-500" rules={RULES} onSelectMode={(mode) => { setIsPlaying(true); }} />
         </div>
     );
 }

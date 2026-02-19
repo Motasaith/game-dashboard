@@ -7,6 +7,7 @@ import Link from "next/link";
 import ConvexClientProvider from "@/components/ConvexClientProvider";
 import Sidebar from "@/components/Sidebar";
 import InviteNotification from "@/components/InviteNotification";
+import InviteWatcher from "@/components/InviteWatcher";
 import {
   ClerkProvider,
   SignedIn,
@@ -61,6 +62,7 @@ export default function RootLayout({
 
             {/* Game Invite Toast Notifications */}
             <InviteNotification />
+            <InviteWatcher />
 
             {/* Mobile Bottom Navigation — visible only on mobile */}
             <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 glass-strong border-t border-slate-800/50 flex justify-around items-center px-2 py-2 safe-area-bottom">

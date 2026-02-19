@@ -51,7 +51,7 @@ export default function LightsOutPage() {
                 gradient="from-purple-400 to-pink-500"
                 rules={RULES}
                 onSelectMode={(mode) => {
-                    if (mode === 'cpu') setIsPlaying(true);
+                    setIsPlaying(true);
                 }}
             />
         </div>

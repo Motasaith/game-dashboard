@@ -24,8 +24,8 @@ export default function InviteNotification() {
     const declineInvite = useMutation(api.gameInvites.declineInvite);
 
     const handleAccept = async (inviteId: string, gamePath: string) => {
-        await acceptInvite({ inviteId: inviteId as any });
-        router.push(gamePath);
+        const result = await acceptInvite({ inviteId: inviteId as any });
+        router.push(gamePath + "?session=" + result.sessionId);
     };
 
     const handleDecline = async (inviteId: string) => {

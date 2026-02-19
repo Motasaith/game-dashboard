@@ -55,7 +55,7 @@ export default function ConnectFourPage() {
                 gradient="from-blue-500 to-cyan-500"
                 rules={RULES}
                 onSelectMode={(mode) => {
-                    if (mode === 'cpu') setIsPlaying(true);
+                    setIsPlaying(true);
                 }}
             />
         </div>

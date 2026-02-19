@@ -51,7 +51,7 @@ export default function TicTacToePage() {
                 gradient="from-cyan-400 to-blue-500"
                 rules={RULES}
                 onSelectMode={(mode) => {
-                    if (mode === 'cpu') setIsPlaying(true);
+                    setIsPlaying(true);
                 }}
             />
         </div>

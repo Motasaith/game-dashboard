@@ -70,8 +70,8 @@ export default function FriendsPage() {
                                 key={t.key}
                                 onClick={() => setTab(t.key)}
                                 className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all whitespace-nowrap flex-1 justify-center ${tab === t.key
-                                        ? "bg-gradient-to-r from-cyan-500 to-blue-500 text-white shadow-lg shadow-cyan-500/20"
-                                        : "text-slate-400 hover:text-white hover:bg-white/5"
+                                    ? "bg-gradient-to-r from-cyan-500 to-blue-500 text-white shadow-lg shadow-cyan-500/20"
+                                    : "text-slate-400 hover:text-white hover:bg-white/5"
                                     }`}
                             >
                                 <Icon className="w-4 h-4" />
@@ -356,12 +356,11 @@ function RequestsTab({ clerkId }: { clerkId: string }) {
 }
 
 /* ──────────────────────────────────────────────
-   SEARCH TAB
+   SEARCH TAB — Shows ALL registered players
    ────────────────────────────────────────────── */
 function SearchTab({ clerkId }: { clerkId: string }) {
     const [query, setQuery] = useState("");
-    const results = useQuery(api.users.searchUsers, {
-        query,
+    const allUsers = useQuery(api.users.getAllUsers, {
         excludeClerkId: clerkId,
     });
     const sendRequest = useMutation(api.friends.sendRequest);
@@ -376,39 +375,42 @@ function SearchTab({ clerkId }: { clerkId: string }) {
         }
     };
 
+    // Filter client-side by search query
+    const displayed = (allUsers ?? []).filter(
+        (u) =>
+            !query || u.name.toLowerCase().includes(query.toLowerCase())
+    );
+
     return (
         <div>
             <div className="flex items-center gap-2 mb-4">
                 <Search className="w-5 h-5 text-cyan-400" />
                 <h2 className="text-lg font-bold text-white">Find Players</h2>
+                <span className="text-sm text-slate-500">
+                    {allUsers?.length ?? 0} registered
+                </span>
             </div>
 
             <div className="relative mb-6">
                 <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
                 <input
                     type="text"
-                    placeholder="Search by username (min 2 chars)..."
+                    placeholder="Filter players by name..."
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
                     className="w-full bg-slate-800/60 backdrop-blur-sm border border-slate-700/50 rounded-2xl py-3 pl-11 pr-4 text-sm text-white placeholder:text-slate-500 focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500/50 outline-none transition-all"
                 />
             </div>
 
-            {query.length < 2 ? (
+            {displayed.length === 0 ? (
                 <EmptyState
-                    icon={Search}
-                    title="Search for players"
-                    subtitle="Type at least 2 characters to search"
-                />
-            ) : !results || results.length === 0 ? (
-                <EmptyState
-                    icon={Search}
-                    title="No players found"
-                    subtitle={`No results for "${query}"`}
+                    icon={Users}
+                    title={query ? `No players match "${query}"` : "No players yet"}
+                    subtitle={query ? "Try a different name" : "Be the first to invite your friends!"}
                 />
             ) : (
                 <div className="grid gap-3 sm:grid-cols-2">
-                    {results.map((user) => (
+                    {displayed.map((user) => (
                         <FriendCard
                             key={user.clerkId}
                             name={user.name}
@@ -472,8 +474,8 @@ function FriendCard({
                 {isOnline !== undefined && (
                     <span
                         className={`absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full border-2 border-slate-900 ${isOnline
-                                ? "bg-green-400 shadow-[0_0_6px_rgba(34,197,94,0.6)]"
-                                : "bg-slate-600"
+                            ? "bg-green-400 shadow-[0_0_6px_rgba(34,197,94,0.6)]"
+                            : "bg-slate-600"
                             }`}
                     />
                 )}

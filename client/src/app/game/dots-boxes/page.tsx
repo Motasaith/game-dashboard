@@ -43,7 +43,7 @@ export default function DotsPage() {
                 gradient="from-pink-500 to-rose-500"
                 rules={RULES}
                 onSelectMode={(mode) => {
-                    if (mode === 'cpu') setIsPlaying(true);
+                    setIsPlaying(true);
                 }}
             />
         </div>

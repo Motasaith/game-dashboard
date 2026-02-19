@@ -24,7 +24,7 @@ export default function QuoridorPage() {
     );
     return (
         <div className="min-h-screen bg-slate-950 flex items-center justify-center p-4">
-            <GameLobby title="QUORIDOR" subtitle="Move • Block • Outrun" gradient="from-green-400 to-emerald-500" rules={RULES} onSelectMode={(mode) => { if (mode === 'cpu') setIsPlaying(true); }} />
+            <GameLobby title="QUORIDOR" subtitle="Move • Block • Outrun" gradient="from-green-400 to-emerald-500" rules={RULES} onSelectMode={(mode) => { setIsPlaying(true); }} />
         </div>
     );
 }

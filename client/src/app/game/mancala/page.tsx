@@ -55,7 +55,7 @@ export default function MancalaPage() {
                 gradient="from-amber-500 to-yellow-500"
                 rules={RULES}
                 onSelectMode={(mode) => {
-                    if (mode === 'cpu') setIsPlaying(true);
+                    setIsPlaying(true);
                 }}
             />
         </div>

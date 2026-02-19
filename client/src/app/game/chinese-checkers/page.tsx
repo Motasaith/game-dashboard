@@ -30,7 +30,7 @@ export default function ChineseCheckersPage() {
 
     return (
         <div className="min-h-screen bg-slate-950 flex items-center justify-center p-4">
-            <GameLobby title="CHINESE CHECKERS" subtitle="Hop • Chain • Race" gradient="from-red-400 to-pink-500" rules={RULES} onSelectMode={(mode) => { if (mode === 'cpu') setIsPlaying(true); }} />
+            <GameLobby title="CHINESE CHECKERS" subtitle="Hop • Chain • Race" gradient="from-red-400 to-pink-500" rules={RULES} onSelectMode={(mode) => { setIsPlaying(true); }} />
         </div>
     );
 }

@@ -43,7 +43,7 @@ export default function OthelloPage() {
                 gradient="from-emerald-400 to-cyan-500"
                 rules={RULES}
                 onSelectMode={(mode) => {
-                    if (mode === 'cpu') setIsPlaying(true);
+                    setIsPlaying(true);
                 }}
             />
         </div>

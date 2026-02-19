@@ -50,7 +50,7 @@ export default function MorrisPage() {
                 gradient="from-cyan-400 to-blue-600"
                 rules={RULES}
                 onSelectMode={(mode) => {
-                    if (mode === 'cpu') setIsPlaying(true);
+                    setIsPlaying(true);
                 }}
             />
         </div>

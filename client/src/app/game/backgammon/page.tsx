@@ -30,7 +30,7 @@ export default function BackgammonPage() {
 
     return (
         <div className="min-h-screen bg-slate-950 flex items-center justify-center p-4">
-            <GameLobby title="BACKGAMMON" subtitle="Roll • Move • Bear Off" gradient="from-amber-400 to-yellow-500" rules={RULES} onSelectMode={(mode) => { if (mode === 'cpu') setIsPlaying(true); }} />
+            <GameLobby title="BACKGAMMON" subtitle="Roll • Move • Bear Off" gradient="from-amber-400 to-yellow-500" rules={RULES} onSelectMode={(mode) => { setIsPlaying(true); }} />
         </div>
     );
 }

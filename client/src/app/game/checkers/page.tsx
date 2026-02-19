@@ -55,7 +55,7 @@ export default function CheckersPage() {
                 gradient="from-red-500 to-orange-500"
                 rules={RULES}
                 onSelectMode={(mode) => {
-                    if (mode === 'cpu') setIsPlaying(true);
+                    setIsPlaying(true);
                 }}
             />
         </div>

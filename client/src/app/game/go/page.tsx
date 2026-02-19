@@ -24,7 +24,7 @@ export default function GoPage() {
     );
     return (
         <div className="min-h-screen bg-slate-950 flex items-center justify-center p-4">
-            <GameLobby title="GO (9×9)" subtitle="Surround • Capture • Control" gradient="from-amber-400 to-yellow-600" rules={RULES} onSelectMode={(mode) => { if (mode === 'cpu') setIsPlaying(true); }} />
+            <GameLobby title="GO (9×9)" subtitle="Surround • Capture • Control" gradient="from-amber-400 to-yellow-600" rules={RULES} onSelectMode={(mode) => { setIsPlaying(true); }} />
         </div>
     );
 }

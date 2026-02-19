@@ -30,7 +30,7 @@ export default function GomokuPage() {
 
     return (
         <div className="min-h-screen bg-slate-950 flex items-center justify-center p-4">
-            <GameLobby title="GOMOKU" subtitle="Five in a Row • Pure Strategy" gradient="from-purple-400 to-indigo-500" rules={RULES} onSelectMode={(mode) => { if (mode === 'cpu') setIsPlaying(true); }} />
+            <GameLobby title="GOMOKU" subtitle="Five in a Row • Pure Strategy" gradient="from-purple-400 to-indigo-500" rules={RULES} onSelectMode={(mode) => { setIsPlaying(true); }} />
         </div>
     );
 }

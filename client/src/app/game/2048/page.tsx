@@ -51,7 +51,7 @@ export default function Game2048Page() {
                 gradient="from-amber-400 to-orange-500"
                 rules={RULES}
                 onSelectMode={(mode) => {
-                    if (mode === 'cpu') setIsPlaying(true);
+                    setIsPlaying(true);
                 }}
             />
         </div>

@@ -43,7 +43,7 @@ export default function UltimatePage() {
                 gradient="from-purple-400 to-pink-600"
                 rules={RULES}
                 onSelectMode={(mode) => {
-                    if (mode === 'cpu') setIsPlaying(true);
+                    setIsPlaying(true);
                 }}
             />
         </div>
